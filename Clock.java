@@ -1,9 +1,3 @@
-/**
- * The {@code Clock} class is responsible for tracking the number of cycles
- * that have elapsed over time. 
- * @author Kanak Negi
- *
- */
 public class Clock {
 	
 	/**
@@ -135,5 +129,6 @@ public class Clock {
 	private static final long getCurrentTime() {
 		return (System.nanoTime() / 1000000L);
 	}
+
 
 }

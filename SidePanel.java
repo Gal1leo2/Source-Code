@@ -6,13 +6,7 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 public class SidePanel extends JPanel {
-	
-	/**
-	 * Serial Version UID.
-	 */
-	private static final long serialVersionUID = 2181495598854992747L;
-
-	/**
+/**
 	 * The dimensions of each tile on the next piece preview.
 	 */
 	private static final int TILE_SIZE = BoardPanel.TILE_SIZE >> 1;
