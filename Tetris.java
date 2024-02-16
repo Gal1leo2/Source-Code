@@ -124,15 +124,6 @@ public class Tetris extends JFrame {
 							rotatePiece((currentRotation == 3) ? 0 : currentRotation + 1);
 						}
 						break;
-
-					/*
-					 * Pause Game - When pressed, check to see that we're currently playing a game.
-					 * If so, toggle the pause variable and update the logic timer to reflect this
-					 * change, otherwise the game will execute a huge number of updates and
-					 * essentially
-					 * cause an instant game over when we unpause if we stay paused for more than a
-					 * minute or so.
-					 */
 					case KeyEvent.VK_P:
 						if (!isGameOver && !isNewGame) {
 							isPaused = !isPaused;
@@ -238,7 +229,7 @@ public class Tetris extends JFrame {
 				renderGame();
 			}
 		});
-		playMusic("asset/song.wav");
+		playMusic("/Users/ink_project/Desktop/Source Code/asset/song.wav");
 		gameTimer.setRepeats(true);
 		gameTimer.start();
 
@@ -529,7 +520,7 @@ public class Tetris extends JFrame {
 		try {
 			// Open an audio input stream
 			AudioInputStream audioInputStream = AudioSystem
-					.getAudioInputStream(new File("/Users/ink_project/Desktop/Source Code/asset/song.mp3"));
+					.getAudioInputStream(new File("/Users/ink_project/Desktop/Source Code/asset/song.wav"));
 
 			// Get a Clip object to play the audio
 			Clip clip = AudioSystem.getClip();
@@ -545,7 +536,7 @@ public class Tetris extends JFrame {
 	}
 
 	public void showMenu() {
-		playMusic("/Users/ink_project/Desktop/Source Code/asset/song.mp3");
+		playMusic("/Users/ink_project/Desktop/Source Code/asset/song.wav");
 
 		JFrame menuFrame = new JFrame("Tetris Menu");
 		JPanel menuPanel = new JPanel();
