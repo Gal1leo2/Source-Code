@@ -268,7 +268,7 @@ public class BoardPanel extends JPanel {
 	 * @param y The row.
 	 * @return The tile.
 	 */
-	private TileType getTile(int x, int y) {
+	TileType getTile(int x, int y) {
 		return tiles[y][x];
 	}
 

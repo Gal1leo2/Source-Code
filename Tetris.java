@@ -46,9 +46,11 @@ public class Tetris extends JFrame {
 
 	private int currentRotation;
 
+	private Color currentPieceColor;
+
 	private int dropCooldown;
 
-	private float gameSpeed;
+	private int gameSpeed;
 
 	public Tetris() {
 		super("Tetris");
@@ -185,17 +187,21 @@ public class Tetris extends JFrame {
 		this.random = new Random();
 		this.isNewGame = true;
 		switch (level) {
+			case 0:
+				this.gameSpeed = 1;
+				break;
 			case 1:
-				this.gameSpeed = 1.0f;
+				this.gameSpeed = 2;
 				break;
 			case 2:
-				this.gameSpeed = 1.5f;
+				this.gameSpeed = 3;
 				break;
 			case 3:
-				this.gameSpeed = 2.0f;
+				this.gameSpeed = 15;
 				break;
+
 			default:
-				this.gameSpeed = 1.0f; // Default to level 1 if level is not recognized
+				this.gameSpeed = 1; // Default to level 1 if level is not recognized
 				break;
 		}
 		/*
@@ -266,7 +272,7 @@ public class Tetris extends JFrame {
 			 * Increase the speed slightly for the next piece and update the game's timer
 			 * to reflect the increase.
 			 */
-			gameSpeed += 0.035f;
+			gameSpeed += 0.5f;
 			logicTimer.setCyclesPerSecond(gameSpeed);
 			logicTimer.reset();
 
@@ -280,10 +286,8 @@ public class Tetris extends JFrame {
 			/*
 			 * Update the difficulty level. This has no effect on the game, and is only
 			 * used in the "Level" string in the SidePanel.
-			 */
-			level = (int) (gameSpeed * 1.70f);
-
-			/*
+			 *
+			 * /*
 			 * Spawn a new piece to control.
 			 */
 			spawnPiece();
@@ -304,34 +308,25 @@ public class Tetris extends JFrame {
 	 */
 	private void resetGame() {
 		switch (level) {
+			case 0:
+				this.gameSpeed = 1;
+				break;
 			case 1:
-				this.gameSpeed = 1.0f;
+				this.gameSpeed = 2;
 				break;
 			case 2:
-				this.gameSpeed = 1.5f;
+				this.gameSpeed = 3;
 				break;
 			case 3:
-				this.gameSpeed = 2.0f;
+				this.gameSpeed = 15;
 				break;
+
 			default:
-				this.gameSpeed = 1.0f; // Default to level 1 if level is not recognized
+				this.gameSpeed = 1; // Default to level 1 if level is not recognized
 				break;
 		}
 		this.score = 0;
-		switch (level) {
-			case 1:
-				this.gameSpeed = 1.0f;
-				break;
-			case 2:
-				this.gameSpeed = 1.5f;
-				break;
-			case 3:
-				this.gameSpeed = 2.0f;
-				break;
-			default:
-				this.gameSpeed = 1.0f; // Default to level 1 if level is not recognized
-				break;
-		}
+
 		this.nextType = TileType.values()[random.nextInt(TYPE_COUNT)];
 		this.isNewGame = false;
 		this.isGameOver = false;
@@ -507,6 +502,15 @@ public class Tetris extends JFrame {
 		return currentRow;
 	}
 
+	public Color getCurrentPieceColor() {
+		return currentPieceColor;
+	}
+
+	// Method to set the color of the current piece
+	public void setCurrentPieceColor(Color color) {
+		this.currentPieceColor = color;
+	}
+
 	/**
 	 * Gets the rotation of the current piece.
 	 * 
@@ -518,9 +522,8 @@ public class Tetris extends JFrame {
 
 	public void playMusic(String filePath) {
 		try {
-			// Open an audio input stream
-			AudioInputStream audioInputStream = AudioSystem
-					.getAudioInputStream(new File("/Users/ink_project/Desktop/Source Code/asset/song.wav"));
+			// Open an audio input stream from the specified file path
+			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath));
 
 			// Get a Clip object to play the audio
 			Clip clip = AudioSystem.getClip();
@@ -531,13 +534,13 @@ public class Tetris extends JFrame {
 			// Start playing the audio clip
 			clip.start();
 		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-			e.printStackTrace();
+			// Handle any exceptions gracefully
+			e.printStackTrace(); // Consider logging the exception or displaying an error message
 		}
 	}
 
 	public void showMenu() {
-		playMusic("/Users/ink_project/Desktop/Source Code/asset/song.wav");
-
+		playMusic("asset/song.wav");
 		JFrame menuFrame = new JFrame("Tetris Menu");
 		JPanel menuPanel = new JPanel();
 		menuPanel.setLayout(new GridBagLayout());
@@ -563,23 +566,30 @@ public class Tetris extends JFrame {
 				// Open a dialog for setting options
 				int selectedOption = JOptionPane.showOptionDialog(menuFrame, "Set Level:",
 						"Option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-						new String[] { "Level 1", "Level 2", "Level 3" }, "Level 1");
+						new String[] { "Level 1", "Level 2", "Level 3", "EXTREME LEVEL!", "SUPER EPIC LEVEL" },
+						"Level 1");
 
 				// Update the level based on user selection and adjust game parameters
 				switch (selectedOption) {
-					case 0:
+					case 0: // Level 1
 						level = 1;
-						gameSpeed = 1.0f;
 						break;
-					case 1:
+					case 1: // Level 2
 						level = 2;
-						gameSpeed = 1.5f;
 						break;
-					case 2:
+					case 2: // Level 3
 						level = 3;
-						gameSpeed = 2.0f;
+						break;
+					case 3: // EXTREME LEVEL!
+						level = 3;
+						break;
+					case 4:
+						level = 4;
+					default: // Default to Level 1
+						level = 1;
 						break;
 				}
+
 			}
 		});
 
@@ -622,6 +632,8 @@ public class Tetris extends JFrame {
 		menuFrame.setSize(400, 300); // Set a larger size for the menu frame
 		menuFrame.setLocationRelativeTo(null);
 		menuFrame.setVisible(true);
+
+		playMusic("asset/song.wav");
 
 		// รอ USER กด ENTER
 		menuFrame.getRootPane().setDefaultButton(startButton);
