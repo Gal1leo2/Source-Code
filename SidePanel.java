@@ -17,12 +17,6 @@ public class SidePanel extends JPanel {
 	private static final int SHADE_WIDTH = BoardPanel.SHADE_WIDTH >> 1;
 
 	/**
-	 * The number of rows and columns in the preview window. Set to
-	 * 5 because we can show any piece with some sort of padding.
-	 */
-	private static final int TILE_COUNT = 5;
-
-	/**
 	 * The center x of the next piece preview box.
 	 */
 	private static final int SQUARE_CENTER_X = 130;
@@ -31,10 +25,6 @@ public class SidePanel extends JPanel {
 	 * The center y of the next piece preview box.
 	 */
 	private static final int SQUARE_CENTER_Y = 65;
-
-	/**
-	 * The size of the next piece preview box.
-	 */
 
 	/**
 	 * The number of pixels used on a small insets (generally used for categories).

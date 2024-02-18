@@ -53,7 +53,7 @@ public class Tetris extends JFrame {
 	private int gameSpeed;
 
 	public Tetris() {
-		super("Tetris");
+		super("TetrisGame");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
 		this.board = new BoardPanel(this);
@@ -140,7 +140,7 @@ public class Tetris extends JFrame {
 					 */
 					case KeyEvent.VK_ENTER:
 						if (isGameOver || isNewGame) {
-							resetGame();
+							resetOrPLAYGame();
 						}
 						break;
 
@@ -186,24 +186,6 @@ public class Tetris extends JFrame {
 		 */
 		this.random = new Random();
 		this.isNewGame = true;
-		switch (level) {
-			case 0:
-				this.gameSpeed = 1;
-				break;
-			case 1:
-				this.gameSpeed = 2;
-				break;
-			case 2:
-				this.gameSpeed = 3;
-				break;
-			case 3:
-				this.gameSpeed = 15;
-				break;
-
-			default:
-				this.gameSpeed = 1; // Default to level 1 if level is not recognized
-				break;
-		}
 		/*
 		 * Setup the timer to keep the game from running before the user presses enter
 		 * to start it.
@@ -266,6 +248,7 @@ public class Tetris extends JFrame {
 			int cleared = board.checkLines();
 			if (cleared > 0) {
 				score += 50 << cleared;
+				gameSpeed += 10;
 			}
 
 			/*
@@ -284,10 +267,6 @@ public class Tetris extends JFrame {
 			dropCooldown = 25;
 
 			/*
-			 * Update the difficulty level. This has no effect on the game, and is only
-			 * used in the "Level" string in the SidePanel.
-			 *
-			 * /*
 			 * Spawn a new piece to control.
 			 */
 			spawnPiece();
@@ -306,7 +285,7 @@ public class Tetris extends JFrame {
 	 * Resets the game variables to their default values at the start
 	 * of a new game.
 	 */
-	private void resetGame() {
+	private void resetOrPLAYGame() {
 		switch (level) {
 			case 0:
 				this.gameSpeed = 1;
@@ -320,13 +299,12 @@ public class Tetris extends JFrame {
 			case 3:
 				this.gameSpeed = 15;
 				break;
-
 			default:
-				this.gameSpeed = 1; // Default to level 1 if level is not recognized
+				this.level = 0;
+				this.gameSpeed = 1;
 				break;
 		}
 		this.score = 0;
-
 		this.nextType = TileType.values()[random.nextInt(TYPE_COUNT)];
 		this.isNewGame = false;
 		this.isGameOver = false;
@@ -566,27 +544,25 @@ public class Tetris extends JFrame {
 				// Open a dialog for setting options
 				int selectedOption = JOptionPane.showOptionDialog(menuFrame, "Set Level:",
 						"Option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-						new String[] { "Level 1", "Level 2", "Level 3", "EXTREME LEVEL!", "SUPER EPIC LEVEL" },
-						"Level 1");
+						new String[] { "Level 0 (Standard Level)", "Level 1", "Level 2", "EXTREME LEVEL!" },
+						"Level 0 (Standard Level)");
 
 				// Update the level based on user selection and adjust game parameters
 				switch (selectedOption) {
-					case 0: // Level 1
+					case 0: // Level 0
+						level = 0;
+						break;
+					case 1: // Level 1
 						level = 1;
 						break;
-					case 1: // Level 2
+					case 2: // Level 2
 						level = 2;
-						break;
-					case 2: // Level 3
-						level = 3;
 						break;
 					case 3: // EXTREME LEVEL!
 						level = 3;
 						break;
-					case 4:
-						level = 4;
 					default: // Default to Level 1
-						level = 1;
+						level = 0;
 						break;
 				}
 
