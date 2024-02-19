@@ -81,6 +81,7 @@ public class SidePanel extends JPanel {
 
 		setPreferredSize(new Dimension(200, BoardPanel.PANEL_HEIGHT));
 		setBackground(Color.WHITE);
+
 	}
 
 	@Override
@@ -105,6 +106,7 @@ public class SidePanel extends JPanel {
 		g.setFont(SMALL_FONT);
 		g.drawString("Level: " + tetris.getLevel(), LARGE_INSET, offset += TEXT_STRIDE);
 		g.drawString("Score: " + tetris.getScore(), LARGE_INSET, offset += TEXT_STRIDE);
+		g.drawString("Speed: " + tetris.getSpeed(), LARGE_INSET, offset += TEXT_STRIDE);
 
 		/*
 		 * Draw the "Controls" category.

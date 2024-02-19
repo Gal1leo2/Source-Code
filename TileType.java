@@ -5,7 +5,7 @@ public enum TileType {
 	/**
 	 * Piece TypeI.
 	 */
-	TypeI(new Color(255, 0, 0), 4, 4, 1, new boolean[][] {
+	TypeI(new Color(0, 255, 255), 4, 4, 1, new boolean[][] {
 			{
 					false, false, false, false,
 					true, true, true, true,
@@ -35,7 +35,7 @@ public enum TileType {
 	/**
 	 * Piece TypeJ.
 	 */
-	TypeJ(new Color(255, 128, 0), 3, 3, 2, new boolean[][] {
+	TypeJ(new Color(0, 0, 255), 3, 3, 2, new boolean[][] {
 			{
 					true, false, false,
 					true, true, true,
@@ -61,7 +61,7 @@ public enum TileType {
 	/**
 	 * Piece TypeL.
 	 */
-	TypeL(new Color(255, 255, 0), 3, 3, 2, new boolean[][] {
+	TypeL(new Color(255, 94, 14), 3, 3, 2, new boolean[][] {
 			{
 					false, false, true,
 					true, true, true,
@@ -87,7 +87,7 @@ public enum TileType {
 	/**
 	 * Piece TypeO.
 	 */
-	TypeO(new Color(0, 255, 0), 2, 2, 2, new boolean[][] {
+	TypeO(new Color(255, 255, 0), 2, 2, 2, new boolean[][] {
 			{
 					true, true,
 					true, true,
@@ -109,7 +109,7 @@ public enum TileType {
 	/**
 	 * Piece TypeS.
 	 */
-	TypeS(new Color(0, 255, 255), 3, 3, 2, new boolean[][] {
+	TypeS(new Color(0, 255, 0), 3, 3, 2, new boolean[][] {
 			{
 					false, true, true,
 					true, true, false,
@@ -135,7 +135,7 @@ public enum TileType {
 	/**
 	 * Piece TypeT.
 	 */
-	TypeT(new Color(0, 0, 255), 3, 3, 2, new boolean[][] {
+	TypeT(new Color(218, 112, 214), 3, 3, 2, new boolean[][] {
 			{
 					false, true, false,
 					true, true, true,
@@ -161,7 +161,7 @@ public enum TileType {
 	/**
 	 * Piece TypeZ.
 	 */
-	TypeZ(new Color(128, 0, 128), 3, 3, 2, new boolean[][] {
+	TypeZ(new Color(255, 0, 0), 3, 3, 2, new boolean[][] {
 			{
 					true, true, false,
 					false, true, true,

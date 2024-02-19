@@ -402,12 +402,12 @@ public class BoardPanel extends JPanel {
 	/**
 	 * Draws a tile onto the board.
 	 * 
-	 * @param base  The base color of tile.
-	 * @param light The light color of the tile.
-	 * @param dark  The dark color of the tile.
-	 * @param x     The column.
-	 * @param y     The row.
-	 * @param g     The graphics object.
+	 * @param base The base color of tile.
+	 * @para m light The light color of the tile.
+	 * @param dark The dark color of the tile.
+	 * @param x    The column.
+	 * @param y    The row.
+	 * @param g    The graphics object.
 	 */
 	private void drawTile(Color base, Color light, Color dark, int x, int y, Graphics g) {
 

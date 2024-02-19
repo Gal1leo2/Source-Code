@@ -3,16 +3,14 @@ import java.util.Random;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.sound.sampled.*;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
+
 import java.io.IOException;
 
 public class Tetris extends JFrame {
+	private Clip clip;
 
 	private static final long FRAME_TIME = 1000L / 50L;
 
@@ -50,10 +48,10 @@ public class Tetris extends JFrame {
 
 	private int dropCooldown;
 
-	private int gameSpeed;
+	private float gameSpeed;
 
 	public Tetris() {
-		super("TetrisGame");
+		super("Tetrimino");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
 		this.board = new BoardPanel(this);
@@ -141,6 +139,7 @@ public class Tetris extends JFrame {
 					case KeyEvent.VK_ENTER:
 						if (isGameOver || isNewGame) {
 							resetOrPLAYGame();
+							stopMusic();
 						}
 						break;
 
@@ -217,7 +216,6 @@ public class Tetris extends JFrame {
 				renderGame();
 			}
 		});
-		playMusic("/Users/ink_project/Desktop/Source Code/asset/song.wav");
 		gameTimer.setRepeats(true);
 		gameTimer.start();
 
@@ -248,14 +246,16 @@ public class Tetris extends JFrame {
 			int cleared = board.checkLines();
 			if (cleared > 0) {
 				score += 50 << cleared;
-				gameSpeed += 10;
+				gameSpeed += 2;
+				playMusic("asset/success.wav");
+
 			}
 
 			/*
 			 * Increase the speed slightly for the next piece and update the game's timer
 			 * to reflect the increase.
 			 */
-			gameSpeed += 0.5f;
+			gameSpeed += 0.25f;
 			logicTimer.setCyclesPerSecond(gameSpeed);
 			logicTimer.reset();
 
@@ -291,13 +291,10 @@ public class Tetris extends JFrame {
 				this.gameSpeed = 1;
 				break;
 			case 1:
-				this.gameSpeed = 2;
-				break;
-			case 2:
 				this.gameSpeed = 3;
 				break;
-			case 3:
-				this.gameSpeed = 15;
+			case 2:
+				this.gameSpeed = 9;
 				break;
 			default:
 				this.level = 0;
@@ -444,6 +441,10 @@ public class Tetris extends JFrame {
 		return level;
 	}
 
+	public float getSpeed() {
+		return gameSpeed;
+	}
+
 	/**
 	 * Gets the current type of piece we're using.
 	 * 
@@ -508,111 +509,120 @@ public class Tetris extends JFrame {
 
 			// Open the audio clip
 			clip.open(audioInputStream);
-
-			// Start playing the audio clip
+			FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			gainControl.setValue(-20.0f);
 			clip.start();
 		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 			// Handle any exceptions gracefully
 			e.printStackTrace(); // Consider logging the exception or displaying an error message
 		}
+
+	}
+
+	public void stopMusic() {
+		if (clip != null && clip.isRunning()) {
+			clip.stop();
+		}
 	}
 
 	public void showMenu() {
 		playMusic("asset/song.wav");
-		JFrame menuFrame = new JFrame("Tetris Menu");
-		JPanel menuPanel = new JPanel();
-		menuPanel.setLayout(new GridBagLayout());
+		JFrame menuFrame = new JFrame("Tetrimino Menu");
+		MenuPanel menuPanel = new MenuPanel();
+		setResizable(false);
+		menuPanel.setLayout(null); // Use null layout for absolute positioning
 
-		JLabel titleLabel = new JLabel("Tetris");
-		titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+		// Add transparent buttons
+		JButton startButton = createTransparentButton("START");
+		JButton levelButton = createTransparentButton("LEVEL");
 
-		JButton startButton = new JButton("START");
-		startButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				menuFrame.setVisible(false); // Hide the menu window
-				menuFrame.dispose(); // Dispose of the menu window resources
-				requestFocus(); // Request focus on the main game window
-				startGame(); // Start the game
-			}
+		// Set the position and size of the buttons
+		startButton.setBounds(540, 250, 200, 100); // x, y, width, height
+		levelButton.setBounds(540, 370, 200, 100); // x, y, width, height
+
+		// Add action listeners to the buttons
+		startButton.addActionListener(e -> {
+			menuFrame.setVisible(false); // Hide the menu window
+			menuFrame.dispose(); // Dispose of the menu window resources
+			requestFocus(); // Request focus on the main game window
+			startGame(); // Start the game
 		});
 
-		JButton optionButton = new JButton("OPTION");
-		optionButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Open a dialog for setting options
-				int selectedOption = JOptionPane.showOptionDialog(menuFrame, "Set Level:",
-						"Option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-						new String[] { "Level 0 (Standard Level)", "Level 1", "Level 2", "EXTREME LEVEL!" },
-						"Level 0 (Standard Level)");
+		levelButton.addActionListener(e -> {
+			menuPanel.setCurrentState("Level"); // Update the state to "Level"
+			menuPanel.removeAll(); // Remove all components from the panel
 
-				// Update the level based on user selection and adjust game parameters
-				switch (selectedOption) {
-					case 0: // Level 0
-						level = 0;
-						break;
-					case 1: // Level 1
-						level = 1;
-						break;
-					case 2: // Level 2
-						level = 2;
-						break;
-					case 3: // EXTREME LEVEL!
-						level = 3;
-						break;
-					default: // Default to Level 1
-						level = 0;
-						break;
-				}
+			// Add level buttons with specific coordinates and size
+			menuPanel.add(createLevelButton(1, 525, 200, 250, 60, menuFrame)); // Level 1 button
+			menuPanel.add(createLevelButton(2, 555, 300, 150, 60, menuFrame)); // Level 2 button
+			menuPanel.add(createLevelButton(3, 450, 415, 400, 60, menuFrame)); // Level 3 button
 
-			}
+			menuFrame.revalidate(); // Revalidate the frame to reflect changes
 		});
 
-		JButton creditButton = new JButton("CREDIT");
-		creditButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Add action for credit button (to be implemented)
-				JOptionPane.showMessageDialog(menuFrame, "Credit menu is not yet implemented.");
-			}
-		});
+		// Add buttons to the menuPanel
+		menuPanel.add(startButton);
+		menuPanel.add(levelButton);
+		setResizable(false);
 
-		JButton exitButton = new JButton("EXIT");
-		exitButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0); // Close the program
-			}
-		});
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(10, 10, 10, 10); // Add some padding
-		menuPanel.add(titleLabel, gbc);
-
-		gbc.gridy = 1;
-		menuPanel.add(startButton, gbc);
-
-		gbc.gridy = 2;
-		menuPanel.add(optionButton, gbc);
-
-		gbc.gridy = 3;
-		menuPanel.add(creditButton, gbc);
-
-		gbc.gridy = 4;
-		menuPanel.add(exitButton, gbc);
-
+		// Add the menuPanel to the menuFrame
 		menuFrame.add(menuPanel);
-		menuFrame.setSize(400, 300); // Set a larger size for the menu frame
+		menuFrame.setSize(1280, 720); // Set a larger size for the menu frame
 		menuFrame.setLocationRelativeTo(null);
 		menuFrame.setVisible(true);
 
-		playMusic("asset/song.wav");
-
-		// รอ USER กด ENTER
+		// Set default button for the menuFrame
 		menuFrame.getRootPane().setDefaultButton(startButton);
+		setResizable(false);
+
+	}
+
+	public JButton createLevelButton(int level, int x, int y, int width, int height, JFrame menuFrame) {
+		JButton button = new JButton("Level " + level);
+		button.setBounds(x, y, width, height); // Set the bounds with specific coordinates and size
+		button.setOpaque(false); // Make the button transparent
+		button.setContentAreaFilled(false); // Make the content area transparent
+		button.setBorderPainted(false); // Remove border
+		button.setForeground(new Color(0, 0, 0, 0)); // Set text color to fully transparent
+		button.setFocusPainted(false); // Remove focus indication
+		button.addActionListener(e -> {
+			this.level = level; // Set the selected level
+			menuFrame.setVisible(false); // Hide the menu window
+			menuFrame.dispose(); // Dispose of the menu window resources
+			requestFocus(); // Request focus on the main game window
+			startGame(); // Start the game with the selected level
+
+		});
+		return button;
+	}
+
+	public class MenuPanel extends JPanel {
+		private String currentState = "Start"; // Variable to track the current state
+
+		@Override
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			ImageIcon imageIcon = currentState.equals("Start") ? new ImageIcon("asset/wallpaper_start.png")
+					: new ImageIcon("asset/wallpaper_levels.png");
+			g.drawImage(imageIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
+		}
+
+		// Method to update the current state
+		public void setCurrentState(String state) {
+			currentState = state;
+			repaint(); // Repaint the panel to update the wallpaper
+		}
+	}
+
+	private JButton createTransparentButton(String label) {
+		JButton button = new JButton(label);
+		button.setOpaque(false); // Make the button transparent
+		button.setContentAreaFilled(false); // Make the content area transparent
+		button.setBorderPainted(false); // Remove border
+		button.setForeground(new Color(0, 0, 0, 0)); // Set text color to fully transparent
+		button.setFocusPainted(false); // Remove focus indication
+
+		return button;
 	}
 
 	public static void main(String[] args) {
