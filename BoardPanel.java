@@ -133,24 +133,14 @@ public class BoardPanel extends JPanel {
 	 */
 	public boolean isValidAndEmpty(TileType type, int x, int y, int rotation) {
 
-		// Ensure the piece is in a valid column.
 		if (x < -type.getLeftInset(rotation) || x + type.getDimension() - type.getRightInset(rotation) >= COL_COUNT) {
 			return false;
 		}
 
-		// Ensure the piece is in a valid row.
 		if (y < -type.getTopInset(rotation) || y + type.getDimension() - type.getBottomInset(rotation) >= ROW_COUNT) {
 			return false;
 		}
 
-		/*
-		 * Loop through every tile in the piece and see if it conflicts with an existing
-		 * tile.
-		 * 
-		 * Note: It's fine to do this even though it allows for wrapping because we've
-		 * already
-		 * checked to make sure the piece is in a valid location.
-		 */
 		for (int col = 0; col < type.getDimension(); col++) {
 			for (int row = 0; row < type.getDimension(); row++) {
 				if (type.isTile(col, row, rotation) && isOccupied(x + col, y + row)) {
@@ -194,14 +184,6 @@ public class BoardPanel extends JPanel {
 	public int checkLines() {
 		int completedLines = 0;
 
-		/*
-		 * Here we loop through every line and check it to see if
-		 * it's been cleared or not. If it has, we increment the
-		 * number of completed lines and check the next row.
-		 * 
-		 * The checkLine function handles clearing the line and
-		 * shifting the rest of the board down for us.
-		 */
 		for (int row = 0; row < ROW_COUNT; row++) {
 			if (checkLine(row)) {
 				completedLines++;
@@ -217,20 +199,13 @@ public class BoardPanel extends JPanel {
 	 * @return Whether or not this row is full.
 	 */
 	private boolean checkLine(int line) {
-		/*
-		 * Iterate through every column in this row. If any of them are
-		 * empty, then the row is not full.
-		 */
+
 		for (int col = 0; col < COL_COUNT; col++) {
 			if (!isOccupied(col, line)) {
 				return false;
 			}
 		}
 
-		/*
-		 * Since the line is filled, we need to 'remove' it from the game.
-		 * To do this, we simply shift every row above it down by one.
-		 */
 		for (int row = line - 1; row >= 0; row--) {
 			for (int col = 0; col < COL_COUNT; col++) {
 				setTile(col, row + 1, getTile(col, row));

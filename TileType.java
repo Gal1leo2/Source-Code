@@ -342,18 +342,8 @@ public enum TileType {
 		return tiles[rotation][y * dimension + x];
 	}
 
-	/**
-	 * The left inset is represented by the number of empty columns on the left
-	 * side of the array for the given rotation.
-	 * 
-	 * @param rotation The rotation.
-	 * @return The left inset.
-	 */
 	public int getLeftInset(int rotation) {
-		/*
-		 * Loop through from left to right until we find a tile then return
-		 * the column.
-		 */
+
 		for (int x = 0; x < dimension; x++) {
 			for (int y = 0; y < dimension; y++) {
 				if (isTile(x, y, rotation)) {
